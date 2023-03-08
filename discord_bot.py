@@ -66,13 +66,13 @@ async def exception(ctx: commands.Context, arg: int):
 async def exception_error(ctx: commands.Context, error):
     if isinstance(error, commands.errors.MissingRequiredArgument):
         await ctx.send("값을 입력해 주세요.")
-    
+
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send("숫자만 입력해 주세요.")
-    
+
     else:
         await ctx.send(f"예외가 발생하였습니다.\n```{error}```")
 
 
-with open("./_token.txt", "r") as fr:
+with open("./token.txt", "r") as fr:
     bot.run(fr.read())

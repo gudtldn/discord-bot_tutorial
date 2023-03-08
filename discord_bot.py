@@ -5,8 +5,7 @@ class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix=".",
-            intents=discord.Intents.all(),
-            application_id=...
+            intents=discord.Intents.all()
         )
 
     async def on_ready(self):

@@ -1,4 +1,4 @@
-_*.py
+_*.*
 !__*.py
 TODO/
 token.txt

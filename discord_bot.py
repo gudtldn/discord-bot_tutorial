@@ -1,7 +1,9 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 from typing import Optional
 
+GUILDS = [discord.Object(id) for id in (...,)] #서버 ID를 넣어주세요.
 
 class Bot(commands.Bot):
     def __init__(self):
@@ -9,6 +11,10 @@ class Bot(commands.Bot):
             command_prefix=".",
             intents=discord.Intents.all()
         )
+
+    async def setup_hook(self):
+        for guild in GUILDS:
+            await self.tree.sync(guild=guild)
 
     async def on_ready(self):
         print(f"{self.user.name}으로 로그인")
@@ -72,6 +78,47 @@ async def exception_error(ctx: commands.Context, error):
 
     else:
         await ctx.send(f"예외가 발생하였습니다.\n```{error}```")
+
+
+@bot.tree.command(
+    name="안녕",
+    description="봇이 인사를 합니다.",
+    guilds=GUILDS
+)
+async def app_send_hello(interaction: discord.Interaction):
+    await interaction.response.send_message("안녕하세요!")
+
+
+@bot.tree.command(
+    name="매개변수",
+    description="매개변수 테스트 명령어 입니다.",
+    guilds=GUILDS
+)
+@app_commands.rename(
+    arg1="arg1",
+    arg2="인수2",
+    arg3="인수3"
+)
+@app_commands.describe(
+    arg1="문자열을 입력해 주세요.",
+    arg2="정수를 입력해 주세요.",
+    arg3="논리값을 입력해 주세요."
+)
+async def app_args_test(interaction: discord.Interaction, arg1: str, arg2: int, arg3: Optional[bool] = None):
+    await interaction.response.send_message(f"arg1: {arg1}\narg2: {arg2}\narg3: {arg3}")
+
+
+@bot.tree.command(
+    name="예외",
+    description="예외를 발생시킵니다.",
+    guilds=GUILDS
+)
+async def app_exception(interaction: discord.Interaction):
+    raise Exception("예외발생!")
+
+@app_exception.error
+async def app_exception_error(interaction: discord.Interaction, error):
+    await interaction.response.send_message(f"에러가 발생하였습니다.\n```{error}```")
 
 
 with open("./token.txt", "r") as fr:
